@@ -1,9 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.ExtendedExecution;
-using Windows.ApplicationModel.ExtendedExecution.Foreground;
-using Windows.Foundation.Metadata;
 using Windows.Networking;
 using Windows.Networking.Connectivity;
 using Windows.System.Display;
@@ -25,15 +22,11 @@ namespace FtpServer
         bool _running;
         DisplayRequest _displayRequest;
         bool _displayActive;
-        ExtendedExecutionSession _eeSession;
-        object _eeForegroundSession;
 
         public MainPage()
         {
             InitializeComponent();
             Logger.OnLog += OnLogLine;
-            KeepAlivePlayer.Initialize(Dispatcher);
-            KeepAlivePlayer.StateChanged += OnBgStateChanged;
             Loaded += MainPage_Loaded;
         }
 
@@ -47,8 +40,6 @@ namespace FtpServer
             PassBox.Password = s.Password;
             WriteToggle.IsOn = s.AllowWrites;
             ScreenOnToggle.IsOn = s.KeepScreenOn;
-            LockToggle.IsOn = s.RunUnderLock;
-            BackgroundModeToggle.IsOn = s.BackgroundMode;
 
             _homeFolder = await RestoreHomeFolderAsync();
             UpdateHomeText();
@@ -111,8 +102,6 @@ namespace FtpServer
             s.Password = PassBox.Password ?? "";
             s.AllowWrites = WriteToggle.IsOn;
             s.KeepScreenOn = ScreenOnToggle.IsOn;
-            s.RunUnderLock = LockToggle.IsOn;
-            s.BackgroundMode = BackgroundModeToggle.IsOn;
             s.Save();
             return s;
         }
@@ -137,8 +126,7 @@ namespace FtpServer
             {
                 _ftp.Stop();
                 _web.Stop();
-                KeepAlivePlayer.ServerStopped();
-                StopProtection();
+                ReleaseDisplayRequest();
                 _running = false;
                 StatusText.Text = "Stopped";
                 StartStopButton.Content = "Start server";
@@ -158,17 +146,13 @@ namespace FtpServer
             {
                 _ftp.Stop();
                 _web.Stop();
-                KeepAlivePlayer.ServerStopped();
-                StopProtection();
+                ReleaseDisplayRequest();
                 Logger.Log("Start failed: " + ex.Message);
                 StatusText.Text = "Start failed";
                 return;
             }
             _running = true;
-            KeepAlivePlayer.SetEnabled(settings.BackgroundMode);
-            KeepAlivePlayer.ServerStarted();
             AcquireDisplayRequest(settings);
-            await StartExtendedExecutionAsync(settings);
             StatusText.Text = "Running";
             StartStopButton.Content = "Stop server";
             var ips = GetLocalIps();
@@ -189,7 +173,7 @@ namespace FtpServer
             Logger.Log("Sharing folder: " + _homeFolder.Name);
         }
 
-        // ---- Lock-screen protection (v1.1) ----
+        // ---- Keep screen on (DisplayRequest) ----
 
         void AcquireDisplayRequest(ServerSettings settings)
         {
@@ -216,123 +200,6 @@ namespace FtpServer
             try { _displayRequest.RequestRelease(); }
             catch (Exception ex) { Logger.Log("Keep screen on release failed: " + ex.Message); }
             _displayActive = false;
-        }
-
-        async Task StartExtendedExecutionAsync(ServerSettings settings)
-        {
-            if (!settings.RunUnderLock)
-            {
-                LockText.Text = "Lock-screen mode: Off";
-                Logger.Log("Run under lock screen: off (setting)");
-                return;
-            }
-
-            // Preferred: the foreground extended-execution session, which is
-            // the one designed to keep a foreground app running under the
-            // lock screen. Guarded — the type may not exist on this OS build.
-            if (ApiInformation.IsTypePresent("Windows.ApplicationModel.ExtendedExecution.Foreground.ExtendedExecutionForegroundSession"))
-            {
-                ExtendedExecutionForegroundSession fg = null;
-                try
-                {
-                    fg = new ExtendedExecutionForegroundSession();
-                    fg.Reason = ExtendedExecutionForegroundReason.Unspecified;
-                    fg.Description = "AirTile transfers";
-                    fg.Revoked += ForegroundSession_Revoked;
-                    var result = await fg.RequestExtensionAsync();
-                    Logger.Log("Extended execution (foreground) result: " + result);
-                    if (result == ExtendedExecutionForegroundResult.Allowed)
-                    {
-                        _eeForegroundSession = fg;
-                        LockText.Text = "Lock-screen mode: Allowed";
-                        return;
-                    }
-                    LockText.Text = "Lock-screen mode: Denied — keep screen on instead";
-                    fg.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log("Extended execution (foreground) failed: " + ex.Message);
-                    try { if (fg != null) fg.Dispose(); } catch { }
-                }
-            }
-            else
-            {
-                Logger.Log("Extended execution (foreground) not available on this OS — using basic session");
-            }
-
-            // Fallback: a plain extended-execution session.
-            try
-            {
-                var session = new ExtendedExecutionSession();
-                session.Reason = ExtendedExecutionReason.Unspecified;
-                session.Description = "AirTile transfers";
-                session.Revoked += EeSession_Revoked;
-                var result = await session.RequestExtensionAsync();
-                Logger.Log("Extended execution result: " + result);
-                if (result == ExtendedExecutionResult.Allowed)
-                {
-                    _eeSession = session;
-                    LockText.Text = "Lock-screen mode: Allowed";
-                }
-                else
-                {
-                    LockText.Text = "Lock-screen mode: Denied — keep screen on instead";
-                    session.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log("Extended execution failed: " + ex.Message);
-                LockText.Text = "Lock-screen mode: Denied — keep screen on instead";
-            }
-        }
-
-        async void OnLockProtectionLost(string reason)
-        {
-            Logger.Log("Extended execution revoked: " + reason + " — transfers may stop when the phone is locked");
-            try
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    LockText.Text = "Lock protection lost: " + reason;
-                });
-            }
-            catch { }
-        }
-
-        void ForegroundSession_Revoked(object sender, ExtendedExecutionForegroundRevokedEventArgs args)
-        {
-            _eeForegroundSession = null;
-            OnLockProtectionLost(args.Reason.ToString());
-        }
-
-        void EeSession_Revoked(object sender, ExtendedExecutionRevokedEventArgs args)
-        {
-            _eeSession = null;
-            OnLockProtectionLost(args.Reason.ToString());
-        }
-
-        void StopProtection()
-        {
-            ReleaseDisplayRequest();
-            try { if (_eeSession != null) _eeSession.Dispose(); } catch { }
-            _eeSession = null;
-            try { var fg = _eeForegroundSession as IDisposable; if (fg != null) fg.Dispose(); } catch { }
-            _eeForegroundSession = null;
-            LockText.Text = "";
-        }
-
-        async void OnBgStateChanged(string state)
-        {
-            try
-            {
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    BgText.Text = "Background mode: " + state;
-                });
-            }
-            catch { }
         }
 
         async void OnLogLine(string line)

@@ -85,7 +85,6 @@
     <Compile Include="Server\FtpServerEngine.cs" />
     <Compile Include="Server\FtpSession.cs" />
     <Compile Include="Server\WebServerEngine.cs" />
-    <Compile Include="Server\KeepAlivePlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,7 +103,6 @@
     <Content Include="Assets\Square71x71Logo.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.png" />
-    <Content Include="Assets\silence.wav" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

@@ -22,39 +22,30 @@ Wi-Fi or hotspot. Personal sideload.
   FutureAccessList — pick the SD card root or a Music folder), settings
   saved to LocalSettings, and a 100-line log.
 
-## v1.1 — lock-screen fix
+## v1.1 — keep screen on
 
 v1 stopped transfers when the phone locked (W10M suspends the app).
-v1.1 adds, both toggleable in Settings (persisted, both default ON):
-**Keep screen on while running** (a single `DisplayRequest`, active
-only while the server runs) and **Run under lock screen** (a
-runtime-guarded `ExtendedExecutionForegroundSession` requested on
-Start, falling back to a plain `ExtendedExecutionSession`; the result
-is shown in the status area and the log, revocations are logged
-without stopping the listeners).
+v1.1 adds **Keep screen on while running** (toggleable in Settings,
+persisted, default ON): a single `DisplayRequest`, active only while
+the server runs, so the phone doesn't lock by itself mid-transfer.
 
-## v1.3 — background transfers (VLC style)
+## v1.4 — background features removed
 
-The package now declares the same `backgroundMediaPlayback`
-capability the VLC UWP app uses. While an FTP RETR/STOR or a web
-download/upload is in flight, a shared transfer counter starts a
-`MediaPlayer` looping a silent WAV (`Assets/silence.wav`), so Windows
-keeps the process alive in the background / under the lock screen;
-30 s after the last transfer ends it pauses again. Toggleable in
-Settings (**Background mode (VLC style)**, default ON); state is
-shown in the status area and the log. The command manager is disabled
-so AirTile never takes over media controls, and silent playback may
-pause music in other apps during a transfer.
+At the user's request, v1.4 removes the two background experiments
+completely — toggles, settings, capabilities and all related code:
+**Run under lock screen** (v1.1/v1.3, extended execution) and
+**Background mode (VLC style)** (v1.3, silent-audio keep-alive).
+The server is back to the v1.2 behaviour: foreground app, with
+Keep screen on as the only lock protection.
 
 ## Honest limitations
 
 - **Plain FTP only.** UWP gives no server-side TLS listener, so there
   is no FTPS in v1. Home Wi-Fi only.
-- Windows 10 Mobile suspends background apps: v1.1/v1.3 keep the
-  server alive via keep-screen-on, extended execution, and (during
-  transfers) silent-audio background mode — but an idle app can still
-  be suspended, and the system can always kill a background app under
-  memory/battery pressure.
+- Windows 10 Mobile suspends background apps: the server runs in
+  the foreground only (v1.4 removed the background experiments);
+  Keep screen on stops the phone locking by itself while it runs,
+  but locking the phone or switching away suspends the app.
 - The app can only share folders it has access to (libraries + the
   folder you pick), per the UWP sandbox.
 - Not yet tested on the real phone — first install on the Lumia is

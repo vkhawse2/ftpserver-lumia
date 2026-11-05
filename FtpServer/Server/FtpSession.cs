@@ -297,7 +297,6 @@ namespace FtpServer.Server
             var data = await AcceptDataAsync();
             if (data == null) { await Send("425 No data connection"); return; }
             long total = 0;
-            KeepAlivePlayer.TransferStarted();
             try
             {
                 using (var src = await file.OpenStreamForReadAsync())
@@ -315,7 +314,6 @@ namespace FtpServer.Server
             }
             catch (Exception ex) { Logger.Log("FTP RETR error: " + ex.Message); }
             try { data.Dispose(); } catch { }
-            KeepAlivePlayer.TransferEnded();
             Logger.Log("FTP download " + file.Name + " (" + total + " bytes)");
             await Send("226 Transfer complete");
         }
@@ -332,7 +330,6 @@ namespace FtpServer.Server
             var data = await AcceptDataAsync();
             if (data == null) { await Send("425 No data connection"); return; }
             long total = 0;
-            KeepAlivePlayer.TransferStarted();
             try
             {
                 var file = await parent.CreateFileAsync(name, CreationCollisionOption.ReplaceExisting);
@@ -351,7 +348,6 @@ namespace FtpServer.Server
             }
             catch (Exception ex) { Logger.Log("FTP STOR error: " + ex.Message); }
             try { data.Dispose(); } catch { }
-            KeepAlivePlayer.TransferEnded();
             Logger.Log("FTP upload " + name + " (" + total + " bytes)");
             await Send("226 Transfer complete");
         }

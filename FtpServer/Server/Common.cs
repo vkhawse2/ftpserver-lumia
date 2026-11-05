@@ -30,8 +30,6 @@ namespace FtpServer.Server
         public string Password = "";
         public bool AllowWrites = true;
         public bool KeepScreenOn = true;
-        public bool RunUnderLock = true;
-        public bool BackgroundMode = true;
 
         public static ServerSettings Load()
         {
@@ -44,8 +42,6 @@ namespace FtpServer.Server
             if (v.ContainsKey("Password")) s.Password = (string)v["Password"];
             if (v.ContainsKey("AllowWrites")) s.AllowWrites = (bool)v["AllowWrites"];
             if (v.ContainsKey("KeepScreenOn")) s.KeepScreenOn = (bool)v["KeepScreenOn"];
-            if (v.ContainsKey("RunUnderLock")) s.RunUnderLock = (bool)v["RunUnderLock"];
-            if (v.ContainsKey("BackgroundMode")) s.BackgroundMode = (bool)v["BackgroundMode"];
             if (s.FtpPort <= 0 || s.FtpPort > 65535) s.FtpPort = 2221;
             if (s.WebPort <= 0 || s.WebPort > 65535) s.WebPort = 8080;
             if (string.IsNullOrEmpty(s.Username)) s.Username = "lumia";
@@ -63,8 +59,6 @@ namespace FtpServer.Server
             v["Password"] = Password ?? "";
             v["AllowWrites"] = AllowWrites;
             v["KeepScreenOn"] = KeepScreenOn;
-            v["RunUnderLock"] = RunUnderLock;
-            v["BackgroundMode"] = BackgroundMode;
         }
 
         // True when the supplied credentials are accepted as the
