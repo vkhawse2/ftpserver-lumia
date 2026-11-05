@@ -193,14 +193,15 @@ namespace FtpServer.Server
         }
 
         // Resolve the listing target: arg may be empty, a folder, or a file.
-        async Task<StorageFolder> ListTargetFolder(string arg, out List<string> folderSegs)
+        // Returns the folder to list (the parent folder if arg was a file).
+        async Task<StorageFolder> ListTargetFolder(string arg)
         {
-            folderSegs = PathHelper.Normalize(_cwd, string.IsNullOrEmpty(arg) ? "" : arg);
-            var item = await PathHelper.GetItemAsync(_home, folderSegs);
+            var segs = PathHelper.Normalize(_cwd, string.IsNullOrEmpty(arg) ? "" : arg);
+            var item = await PathHelper.GetItemAsync(_home, segs);
             if (item is StorageFile)
             {
-                folderSegs = folderSegs.GetRange(0, folderSegs.Count - 1);
-                return await PathHelper.GetFolderAsync(_home, folderSegs, false);
+                segs = segs.GetRange(0, segs.Count - 1);
+                return await PathHelper.GetFolderAsync(_home, segs, false);
             }
             return item as StorageFolder;
         }
@@ -222,8 +223,7 @@ namespace FtpServer.Server
                 var checkItem = await PathHelper.GetItemAsync(_home, checkSegs);
                 if (checkItem is StorageFile) singleFile = checkItem.Name;
             }
-            List<string> segs;
-            var folder = await ListTargetFolder(arg, out segs);
+            var folder = await ListTargetFolder(arg);
             if (folder == null) { await Send("550 Folder not found"); return; }
             await Send("150 Opening data connection for listing");
             var data = await AcceptDataAsync();
@@ -259,8 +259,7 @@ namespace FtpServer.Server
 
         async Task CmdMlsd(string arg)
         {
-            List<string> segs;
-            var folder = await ListTargetFolder(arg, out segs);
+            var folder = await ListTargetFolder(arg);
             if (folder == null) { await Send("550 Folder not found"); return; }
             await Send("150 Opening data connection for MLSD");
             var data = await AcceptDataAsync();
