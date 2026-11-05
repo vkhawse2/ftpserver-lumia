@@ -1,0 +1,45 @@
+WiFi FTP Server for Lumia 540 (Windows 10 Mobile, build 14393)
+==============================================================
+
+Personal sideload. Modelled on MedhaApps WiFi FTP Server Pro (Android).
+
+Install (in this order):
+  1. FtpServer.cer             - tap it on the phone, install the certificate.
+  2. Dependency .appx files    - only if install fails with 0x80073CF3
+                                 (missing dependency): install the included
+                                 dependency .appx files first (or install via
+                                 Device Portal, adding ALL dependencies
+                                 together with the bundle).
+  3. FtpServer_1.0.0.0_ARM.appxbundle
+                               - tap it, install. Done.
+
+Notes:
+  - Developer Mode must be ON (Settings > Update & security > For developers).
+  - A NEW build always comes with a NEW .cer - always install the .cer
+    that came with the bundle you are installing.
+
+First run:
+  1. Open "WiFi FTP Server".
+  2. Tap "Choose home folder" and pick the folder to share - e.g. the
+     SD card root, or the Music folder on the SD card. (If you skip
+     this, only the app's own folder is shared.)
+  3. Leave Anonymous ON for home Wi-Fi, or turn it off and set a
+     username/password. Leave "Allow writes" ON if you want to upload.
+  4. Tap "Start server". The app shows two addresses, e.g.
+       ftp://192.168.1.5:2221
+       http://192.168.1.5:8080
+
+Connect from your PC:
+  - FTP: FileZilla, FtpView, or Windows Explorer - open
+    ftp://<phone-ip>:2221 (passive mode). Copy files both ways,
+    whole folders at a time.
+  - Browser: open http://<phone-ip>:8080 in any browser - browse,
+    download, upload (with progress bar), create folders, delete.
+    The page is responsive: it works on a phone browser too.
+
+Honest limits:
+  - Plain FTP only (no FTPS) - UWP has no server-side TLS listener.
+    Use it on your home Wi-Fi / hotspot only, not public networks.
+  - The server runs only while the app is open in the foreground.
+    Windows 10 Mobile stops it when the app is closed or suspended.
+  - NOT runtime-tested yet - the first run on your Lumia is the real test.

@@ -1,0 +1,49 @@
+<Page
+    x:Class="FtpServer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="#181818">
+
+    <ScrollViewer>
+        <StackPanel Margin="16">
+            <TextBlock Text="WiFi FTP Server" FontSize="28" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock Text="Share a phone / SD card folder over FTP and a web page, on your home Wi-Fi."
+                       Foreground="#AAAAAA" TextWrapping="Wrap" Margin="0,4,0,12"/>
+
+            <TextBlock x:Name="StatusText" Text="Stopped" FontSize="24" FontWeight="SemiBold" Foreground="#FFB74D"/>
+            <Button x:Name="StartStopButton" Content="Start server" Click="StartStop_Click"
+                    HorizontalAlignment="Stretch" Height="56" FontSize="18" Margin="0,8,0,4"
+                    Background="#2D7DD2" Foreground="White"/>
+            <TextBlock x:Name="AddrText" IsTextSelectionEnabled="True" TextWrapping="Wrap"
+                       FontSize="18" Foreground="#8BC34A" Margin="0,4,0,12"/>
+
+            <TextBlock Text="Home folder (shared)" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,8,0,4"/>
+            <TextBlock x:Name="HomeText" TextWrapping="Wrap" Foreground="#DDDDDD"/>
+            <Button Content="Choose home folder" Click="ChooseFolder_Click"
+                    HorizontalAlignment="Stretch" Height="48" Margin="0,8,0,12"/>
+
+            <TextBlock Text="Settings" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,8,0,4"/>
+            <TextBlock Text="FTP port" Foreground="#AAAAAA"/>
+            <TextBox x:Name="FtpPortBox" Text="2221" InputScope="Number" Margin="0,2,0,8"/>
+            <TextBlock Text="Web port" Foreground="#AAAAAA"/>
+            <TextBox x:Name="WebPortBox" Text="8080" InputScope="Number" Margin="0,2,0,8"/>
+            <ToggleSwitch x:Name="AnonToggle" Header="Anonymous access (home Wi-Fi only)" IsOn="True"
+                          Foreground="White" Toggled="Setting_Toggled"/>
+            <TextBlock Text="Username" Foreground="#AAAAAA"/>
+            <TextBox x:Name="UserBox" Text="lumia" Margin="0,2,0,8"/>
+            <TextBlock Text="Password (only checked when set)" Foreground="#AAAAAA"/>
+            <PasswordBox x:Name="PassBox" Margin="0,2,0,8"/>
+            <ToggleSwitch x:Name="WriteToggle" Header="Allow writes (upload / delete)" IsOn="True"
+                          Foreground="White" Toggled="Setting_Toggled"/>
+            <TextBlock Text="Settings are saved when you tap Start."
+                       Foreground="#888888" FontSize="12" Margin="0,0,0,12"/>
+
+            <TextBlock Text="Log" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,8,0,4"/>
+            <TextBox x:Name="LogBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                     Height="220" FontSize="12"/>
+
+            <TextBlock TextWrapping="Wrap" Foreground="#FFB74D" Margin="0,16,0,24"
+                       Text="Keep this app open — Windows 10 Mobile stops the server when the app is closed or suspended. Plain FTP only: use on your home Wi-Fi."/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
