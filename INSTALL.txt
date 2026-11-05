@@ -1,7 +1,20 @@
 WiFi FTP Server for Lumia 540 (Windows 10 Mobile, build 14393)
 ==============================================================
+Version 1.1.0.0
 
 Personal sideload. Modelled on MedhaApps WiFi FTP Server Pro (Android).
+
+What's new in v1.1:
+  - Lock-screen fix. v1 stopped uploads/downloads when the phone
+    locked, because Windows 10 Mobile suspends the app.
+  - "Keep screen on while running" (default ON): the screen stays
+    awake while the server runs, so the phone does not auto-lock
+    mid-transfer.
+  - "Run under lock screen" (default ON): the app asks Windows for
+    an extended execution session when the server starts, so
+    transfers can keep going even if you press the power button
+    and lock the phone. The result (Allowed / Denied) is shown
+    in the app under the addresses and written to the log.
 
 Install (in this order):
   1. FtpServer.cer             - tap it on the phone, install the certificate.
@@ -10,8 +23,10 @@ Install (in this order):
                                  dependency .appx files first (or install via
                                  Device Portal, adding ALL dependencies
                                  together with the bundle).
-  3. FtpServer_1.0.0.0_ARM.appxbundle
+  3. FtpServer_1.1.0.0_ARM.appxbundle
                                - tap it, install. Done.
+  Installing v1.1 over v1 updates the app in place - your home
+  folder choice and settings are kept.
 
 Notes:
   - Developer Mode must be ON (Settings > Update & security > For developers).
@@ -25,7 +40,9 @@ First run:
      this, only the app's own folder is shared.)
   3. Leave Anonymous ON for home Wi-Fi, or turn it off and set a
      username/password. Leave "Allow writes" ON if you want to upload.
-  4. Tap "Start server". The app shows two addresses, e.g.
+  4. Make sure "Keep screen on while running" and
+     "Run under lock screen" are ON.
+  5. Tap "Start server". The app shows two addresses, e.g.
        ftp://192.168.1.5:2221
        http://192.168.1.5:8080
 
@@ -37,9 +54,22 @@ Connect from your PC:
     download, upload (with progress bar), create folders, delete.
     The page is responsive: it works on a phone browser too.
 
+Lock-screen test (please run this once):
+  1. Start the server.
+  2. From the PC, start a largish download or upload.
+  3. While it is transferring, press the phone's power button to
+     lock the phone.
+  4. Let the transfer finish on the PC.
+  5. Unlock the phone and check the app log: it should show the
+     extended execution result (Allowed) from when the server
+     started, and NO "revoked" line before the transfer finished.
+
 Honest limits:
   - Plain FTP only (no FTPS) - UWP has no server-side TLS listener.
     Use it on your home Wi-Fi / hotspot only, not public networks.
-  - The server runs only while the app is open in the foreground.
-    Windows 10 Mobile stops it when the app is closed or suspended.
-  - NOT runtime-tested yet - the first run on your Lumia is the real test.
+  - Windows 10 Mobile has no Android-style foreground service.
+    Extended execution is a request the system CAN still revoke
+    (battery saver, low battery, memory pressure). For very large
+    transfers, keep "Keep screen on" ON and the charger plugged in.
+  - The server still stops when the app is closed.
+  - NOT runtime-tested by us - your lock test above is the verdict.

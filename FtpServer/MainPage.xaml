@@ -16,6 +16,8 @@
                     Background="#2D7DD2" Foreground="White"/>
             <TextBlock x:Name="AddrText" IsTextSelectionEnabled="True" TextWrapping="Wrap"
                        FontSize="18" Foreground="#8BC34A" Margin="0,4,0,12"/>
+            <TextBlock x:Name="LockText" TextWrapping="Wrap"
+                       FontSize="14" Foreground="#FFB74D" Margin="0,0,0,8"/>
 
             <TextBlock Text="Home folder (shared)" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,8,0,4"/>
             <TextBlock x:Name="HomeText" TextWrapping="Wrap" Foreground="#DDDDDD"/>
@@ -35,6 +37,10 @@
             <PasswordBox x:Name="PassBox" Margin="0,2,0,8"/>
             <ToggleSwitch x:Name="WriteToggle" Header="Allow writes (upload / delete)" IsOn="True"
                           Foreground="White" Toggled="Setting_Toggled"/>
+            <ToggleSwitch x:Name="ScreenOnToggle" Header="Keep screen on while running" IsOn="True"
+                          Foreground="White" Toggled="Setting_Toggled"/>
+            <ToggleSwitch x:Name="LockToggle" Header="Run under lock screen" IsOn="True"
+                          Foreground="White" Toggled="Setting_Toggled"/>
             <TextBlock Text="Settings are saved when you tap Start."
                        Foreground="#888888" FontSize="12" Margin="0,0,0,12"/>
 
@@ -43,7 +49,7 @@
                      Height="220" FontSize="12"/>
 
             <TextBlock TextWrapping="Wrap" Foreground="#FFB74D" Margin="0,16,0,24"
-                       Text="Keep this app open — Windows 10 Mobile stops the server when the app is closed or suspended. Plain FTP only: use on your home Wi-Fi."/>
+                       Text="Keep this app open — Windows 10 Mobile stops the server when the app is closed. With 'Keep screen on' and 'Run under lock screen' on, transfers can keep going after the phone locks, but the system can still revoke that (battery saver / low battery). Plain FTP only: use on your home Wi-Fi."/>
         </StackPanel>
     </ScrollViewer>
 </Page>

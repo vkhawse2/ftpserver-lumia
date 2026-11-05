@@ -22,6 +22,17 @@ Wi-Fi or hotspot. Personal sideload.
   FutureAccessList — pick the SD card root or a Music folder), settings
   saved to LocalSettings, and a 100-line log.
 
+## v1.1 — lock-screen fix
+
+v1 stopped transfers when the phone locked (W10M suspends the app).
+v1.1 adds, both toggleable in Settings (persisted, both default ON):
+**Keep screen on while running** (a single `DisplayRequest`, active
+only while the server runs) and **Run under lock screen** (a
+runtime-guarded `ExtendedExecutionForegroundSession` requested on
+Start, falling back to a plain `ExtendedExecutionSession`; the result
+is shown in the status area and the log, revocations are logged
+without stopping the listeners).
+
 ## Honest limitations
 
 - **Plain FTP only.** UWP gives no server-side TLS listener, so there
