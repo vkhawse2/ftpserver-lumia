@@ -6,7 +6,8 @@ Personal sideload. Modelled on MedhaApps WiFi FTP Server Pro (Android).
 
 What's new in v1.2:
   - New name: AirTile (it is the same WiFi FTP Server underneath).
-  - New logo: blue Windows tile with a Wi-Fi + transfer-arrows glyph.
+  - New logo: monochrome line-art folder with a Wi-Fi symbol inside,
+    black on white - matches any tile colour in your launcher.
   - NO functional changes - servers, settings and the v1.1 lock-screen
     behaviour are exactly as in v1.1.
 
