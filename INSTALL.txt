@@ -1,15 +1,25 @@
 AirTile - WiFi FTP Server for Lumia 540 (Windows 10 Mobile, build 14393)
 ========================================================================
-Version 1.2.0.0
+Version 1.3.0.0
 
 Personal sideload. Modelled on MedhaApps WiFi FTP Server Pro (Android).
 
-What's new in v1.2:
-  - New name: AirTile (it is the same WiFi FTP Server underneath).
-  - New logo: monochrome line-art folder with a Wi-Fi symbol inside,
-    black on white - matches any tile colour in your launcher.
-  - NO functional changes - servers, settings and the v1.1 lock-screen
-    behaviour are exactly as in v1.1.
+What's new in v1.3 - background transfers, VLC style:
+  - NEW "Background mode (VLC style)" toggle (Settings, ON by default).
+    While an upload or download is running, AirTile plays a silent
+    audio loop in the background. Windows treats a media-playing app
+    as alive - exactly how the VLC app keeps running - so the process
+    (and the FTP/web servers in it) is NOT suspended when you lock the
+    phone or switch to another app mid-transfer.
+  - Background mode works only DURING transfers, plus a 30-second
+    grace period after the last one (so multi-file copies don't drop
+    between files). The status area shows its state, and the log shows
+    "Background mode ON (transfer active)" / "Background mode OFF".
+  - Silent playback may pause music playing in other apps while a
+    transfer runs. It never touches your media keys or lock-screen
+    controls.
+  - Everything else is as in v1.2 (rename + logo) and v1.1
+    (keep-screen-on + extended execution lock-screen request).
 
 Install (in this order):
   1. FtpServer.cer             - tap it on the phone, install the certificate.
@@ -18,11 +28,10 @@ Install (in this order):
                                  dependency .appx files first (or install via
                                  Device Portal, adding ALL dependencies
                                  together with the bundle).
-  3. FtpServer_1.2.0.0_ARM.appxbundle
+  3. FtpServer_1.3.0.0_ARM.appxbundle
                                - tap it, install. Done.
-  Installing v1.2 over v1.1 updates the app in place - your home
-  folder choice and settings are kept. The app will appear as
-  "AirTile" in the app list and on its tile.
+  Installing v1.3 over v1.2 updates the app in place - your home
+  folder choice and settings are kept. The app appears as "AirTile".
 
 Notes:
   - Developer Mode must be ON (Settings > Update & security > For developers).
@@ -36,8 +45,8 @@ First run:
      this, only the app's own folder is shared.)
   3. Leave Anonymous ON for home Wi-Fi, or turn it off and set a
      username/password. Leave "Allow writes" ON if you want to upload.
-  4. Make sure "Keep screen on while running" and
-     "Run under lock screen" are ON.
+  4. Make sure "Keep screen on while running", "Run under lock screen"
+     and "Background mode (VLC style)" are ON.
   5. Tap "Start server". The app shows two addresses, e.g.
        ftp://192.168.1.5:2221
        http://192.168.1.5:8080
@@ -50,22 +59,30 @@ Connect from your PC:
     download, upload (with progress bar), create folders, delete.
     The page is responsive: it works on a phone browser too.
 
-Lock-screen test (please run this once):
+Background test (please run this once):
   1. Start the server.
-  2. From the PC, start a largish download or upload.
-  3. While it is transferring, press the phone's power button to
-     lock the phone.
-  4. Let the transfer finish on the PC.
-  5. Unlock the phone and check the app log: it should show the
-     extended execution result (Allowed) from when the server
-     started, and NO "revoked" line before the transfer finished.
+  2. From the PC, start an upload or a download.
+  3. While it is transferring, lock the phone with the power button
+     AND/OR press Start and open another app.
+  4. The transfer must finish on the PC.
+  5. While the phone is still locked / AirTile still in the
+     background, start a SECOND transfer from the PC - it must also
+     finish.
+  6. Unlock, open AirTile, check the log: it should show
+     "Background mode ON (transfer active)" when the first transfer
+     started.
 
 Honest limits:
+  - Background mode covers transfers in progress (+30 s grace).
+    Browsing, listing folders or an idle connection can still freeze
+    when the phone is locked - Windows only guarantees the app stays
+    alive while the silent audio is playing.
+  - Silent playback may pause music in other apps during a transfer.
+  - Windows 10 Mobile has no Android-style foreground service. The
+    system can still kill a background app under extreme memory or
+    battery pressure. Keep the charger plugged in for very large
+    transfers.
   - Plain FTP only (no FTPS) - UWP has no server-side TLS listener.
     Use it on your home Wi-Fi / hotspot only, not public networks.
-  - Windows 10 Mobile has no Android-style foreground service.
-    Extended execution is a request the system CAN still revoke
-    (battery saver, low battery, memory pressure). For very large
-    transfers, keep "Keep screen on" ON and the charger plugged in.
   - The server still stops when the app is closed.
-  - NOT runtime-tested by us - your lock test above is the verdict.
+  - NOT runtime-tested by us - your background test above is the verdict.

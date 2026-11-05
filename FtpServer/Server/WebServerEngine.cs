@@ -202,6 +202,7 @@ namespace FtpServer.Server
             sb.Append("Content-Disposition: attachment; filename=\"" + safeName + "\"\r\n");
             sb.Append("Connection: close\r\n\r\n");
             await SendRaw(sb.ToString());
+            KeepAlivePlayer.TransferStarted();
             using (var src = await file.OpenStreamForReadAsync())
             {
                 var buf = new byte[65536];
@@ -210,6 +211,7 @@ namespace FtpServer.Server
                     await _out.WriteAsync(buf, 0, n);
                 await _out.FlushAsync();
             }
+            KeepAlivePlayer.TransferEnded();
             Logger.Log("Web download " + file.Name + " (" + props.Size + " bytes)");
         }
 
@@ -225,6 +227,7 @@ namespace FtpServer.Server
             if (folder == null) { await SendStatus(500, "Error", "text/plain", Encoding.UTF8.GetBytes("Cannot open folder"), null); return; }
             var file = await folder.CreateFileAsync(name, CreationCollisionOption.ReplaceExisting);
             long remaining = contentLength;
+            KeepAlivePlayer.TransferStarted();
             using (var dst = await file.OpenStreamForWriteAsync())
             {
                 var buf = new byte[65536];
@@ -238,6 +241,7 @@ namespace FtpServer.Server
                 }
                 await dst.FlushAsync();
             }
+            KeepAlivePlayer.TransferEnded();
             Logger.Log("Web upload " + name + " (" + (contentLength - remaining) + " bytes)");
             await SendStatus(200, "OK", "text/plain", Encoding.UTF8.GetBytes("OK"), null);
         }

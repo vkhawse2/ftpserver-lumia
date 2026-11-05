@@ -3,12 +3,14 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap mp uap3 rescap">
 
   <Identity
     Name="Vishal.FtpServer"
     Publisher="CN=Vishal"
-    Version="1.2.0.0" />
+    Version="1.3.0.0" />
   <mp:PhoneIdentity PhoneProductId="0d05214b-1deb-4625-a05a-d29531f54827" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
@@ -50,5 +52,7 @@
     <uap:Capability Name="musicLibrary" />
     <uap:Capability Name="picturesLibrary" />
     <uap:Capability Name="videosLibrary" />
+    <uap3:Capability Name="backgroundMediaPlayback" />
+    <rescap:Capability Name="extendedExecutionForeground" />
   </Capabilities>
 </Package>

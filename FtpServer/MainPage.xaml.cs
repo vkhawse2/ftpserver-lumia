@@ -32,6 +32,8 @@ namespace FtpServer
         {
             InitializeComponent();
             Logger.OnLog += OnLogLine;
+            KeepAlivePlayer.Initialize(Dispatcher);
+            KeepAlivePlayer.StateChanged += OnBgStateChanged;
             Loaded += MainPage_Loaded;
         }
 
@@ -46,6 +48,7 @@ namespace FtpServer
             WriteToggle.IsOn = s.AllowWrites;
             ScreenOnToggle.IsOn = s.KeepScreenOn;
             LockToggle.IsOn = s.RunUnderLock;
+            BackgroundModeToggle.IsOn = s.BackgroundMode;
 
             _homeFolder = await RestoreHomeFolderAsync();
             UpdateHomeText();
@@ -109,6 +112,7 @@ namespace FtpServer
             s.AllowWrites = WriteToggle.IsOn;
             s.KeepScreenOn = ScreenOnToggle.IsOn;
             s.RunUnderLock = LockToggle.IsOn;
+            s.BackgroundMode = BackgroundModeToggle.IsOn;
             s.Save();
             return s;
         }
@@ -133,6 +137,7 @@ namespace FtpServer
             {
                 _ftp.Stop();
                 _web.Stop();
+                KeepAlivePlayer.ServerStopped();
                 StopProtection();
                 _running = false;
                 StatusText.Text = "Stopped";
@@ -153,12 +158,15 @@ namespace FtpServer
             {
                 _ftp.Stop();
                 _web.Stop();
+                KeepAlivePlayer.ServerStopped();
                 StopProtection();
                 Logger.Log("Start failed: " + ex.Message);
                 StatusText.Text = "Start failed";
                 return;
             }
             _running = true;
+            KeepAlivePlayer.SetEnabled(settings.BackgroundMode);
+            KeepAlivePlayer.ServerStarted();
             AcquireDisplayRequest(settings);
             await StartExtendedExecutionAsync(settings);
             StatusText.Text = "Running";
@@ -313,6 +321,18 @@ namespace FtpServer
             try { var fg = _eeForegroundSession as IDisposable; if (fg != null) fg.Dispose(); } catch { }
             _eeForegroundSession = null;
             LockText.Text = "";
+        }
+
+        async void OnBgStateChanged(string state)
+        {
+            try
+            {
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    BgText.Text = "Background mode: " + state;
+                });
+            }
+            catch { }
         }
 
         async void OnLogLine(string line)
