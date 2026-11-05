@@ -3,8 +3,7 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
-  IgnorableNamespaces="uap mp uap3">
+  IgnorableNamespaces="uap mp">
 
   <Identity
     Name="Vishal.FtpServer"
@@ -51,6 +50,5 @@
     <uap:Capability Name="musicLibrary" />
     <uap:Capability Name="picturesLibrary" />
     <uap:Capability Name="videosLibrary" />
-    <uap3:Capability Name="extendedExecutionForeground" />
   </Capabilities>
 </Package>
