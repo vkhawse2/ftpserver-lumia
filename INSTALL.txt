@@ -1,20 +1,14 @@
-WiFi FTP Server for Lumia 540 (Windows 10 Mobile, build 14393)
-==============================================================
-Version 1.1.0.0
+AirTile - WiFi FTP Server for Lumia 540 (Windows 10 Mobile, build 14393)
+========================================================================
+Version 1.2.0.0
 
 Personal sideload. Modelled on MedhaApps WiFi FTP Server Pro (Android).
 
-What's new in v1.1:
-  - Lock-screen fix. v1 stopped uploads/downloads when the phone
-    locked, because Windows 10 Mobile suspends the app.
-  - "Keep screen on while running" (default ON): the screen stays
-    awake while the server runs, so the phone does not auto-lock
-    mid-transfer.
-  - "Run under lock screen" (default ON): the app asks Windows for
-    an extended execution session when the server starts, so
-    transfers can keep going even if you press the power button
-    and lock the phone. The result (Allowed / Denied) is shown
-    in the app under the addresses and written to the log.
+What's new in v1.2:
+  - New name: AirTile (it is the same WiFi FTP Server underneath).
+  - New logo: blue Windows tile with a Wi-Fi + transfer-arrows glyph.
+  - NO functional changes - servers, settings and the v1.1 lock-screen
+    behaviour are exactly as in v1.1.
 
 Install (in this order):
   1. FtpServer.cer             - tap it on the phone, install the certificate.
@@ -23,10 +17,11 @@ Install (in this order):
                                  dependency .appx files first (or install via
                                  Device Portal, adding ALL dependencies
                                  together with the bundle).
-  3. FtpServer_1.1.0.0_ARM.appxbundle
+  3. FtpServer_1.2.0.0_ARM.appxbundle
                                - tap it, install. Done.
-  Installing v1.1 over v1 updates the app in place - your home
-  folder choice and settings are kept.
+  Installing v1.2 over v1.1 updates the app in place - your home
+  folder choice and settings are kept. The app will appear as
+  "AirTile" in the app list and on its tile.
 
 Notes:
   - Developer Mode must be ON (Settings > Update & security > For developers).
@@ -34,7 +29,7 @@ Notes:
     that came with the bundle you are installing.
 
 First run:
-  1. Open "WiFi FTP Server".
+  1. Open "AirTile".
   2. Tap "Choose home folder" and pick the folder to share - e.g. the
      SD card root, or the Music folder on the SD card. (If you skip
      this, only the app's own folder is shared.)

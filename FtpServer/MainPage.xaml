@@ -6,7 +6,7 @@
 
     <ScrollViewer>
         <StackPanel Margin="16">
-            <TextBlock Text="WiFi FTP Server" FontSize="28" FontWeight="SemiBold" Foreground="White"/>
+            <TextBlock Text="AirTile" FontSize="28" FontWeight="SemiBold" Foreground="White"/>
             <TextBlock Text="Share a phone / SD card folder over FTP and a web page, on your home Wi-Fi."
                        Foreground="#AAAAAA" TextWrapping="Wrap" Margin="0,4,0,12"/>
 

@@ -46,7 +46,7 @@ namespace FtpServer.Server
                 _writer = new StreamWriter(output, new UTF8Encoding(false));
                 _writer.NewLine = "\r\n";
 
-                await Send("220 WiFi FTP Server (Lumia) ready");
+                await Send("220 AirTile - WiFi FTP Server (Lumia) ready");
                 string line;
                 while ((line = await _reader.ReadLineAsync()) != null)
                 {

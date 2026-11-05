@@ -1,4 +1,4 @@
-# WiFi FTP Server — Lumia 540 (Windows 10 Mobile)
+# AirTile — WiFi FTP Server for Lumia 540 (Windows 10 Mobile)
 
 An FTP server + web file browser for Vishal's Lumia 540 (Windows 10
 Mobile build 14393, ARM), modelled on MedhaApps' "WiFi FTP Server Pro"

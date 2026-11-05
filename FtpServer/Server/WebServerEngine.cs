@@ -307,7 +307,7 @@ namespace FtpServer.Server
             var sb = new StringBuilder();
             sb.Append("<!DOCTYPE html><html><head><meta charset=\"utf-8\">");
             sb.Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            sb.Append("<title>WiFi FTP Server — " + Html(vpath) + "</title>");
+            sb.Append("<title>AirTile — " + Html(vpath) + "</title>");
             sb.Append("<style>");
             sb.Append("body{background:#181818;color:#eee;font-family:sans-serif;margin:0;padding:12px;}");
             sb.Append("a{color:#6db3f2;text-decoration:none;}");

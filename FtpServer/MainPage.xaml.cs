@@ -229,7 +229,7 @@ namespace FtpServer
                 {
                     fg = new ExtendedExecutionForegroundSession();
                     fg.Reason = ExtendedExecutionForegroundReason.Unspecified;
-                    fg.Description = "WiFi FTP Server transfers";
+                    fg.Description = "AirTile transfers";
                     fg.Revoked += ForegroundSession_Revoked;
                     var result = await fg.RequestExtensionAsync();
                     Logger.Log("Extended execution (foreground) result: " + result);
@@ -258,7 +258,7 @@ namespace FtpServer
             {
                 var session = new ExtendedExecutionSession();
                 session.Reason = ExtendedExecutionReason.Unspecified;
-                session.Description = "WiFi FTP Server transfers";
+                session.Description = "AirTile transfers";
                 session.Revoked += EeSession_Revoked;
                 var result = await session.RequestExtensionAsync();
                 Logger.Log("Extended execution result: " + result);

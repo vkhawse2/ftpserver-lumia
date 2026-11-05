@@ -8,11 +8,11 @@
   <Identity
     Name="Vishal.FtpServer"
     Publisher="CN=Vishal"
-    Version="1.1.0.0" />
+    Version="1.2.0.0" />
   <mp:PhoneIdentity PhoneProductId="0d05214b-1deb-4625-a05a-d29531f54827" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>WiFi FTP Server</DisplayName>
+    <DisplayName>AirTile</DisplayName>
     <PublisherDisplayName>Vishal</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,15 +30,15 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="FtpServer.App">
       <uap:VisualElements
-        DisplayName="WiFi FTP Server"
+        DisplayName="AirTile"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Wi-Fi FTP server + web file browser for Windows 10 Mobile. Share a phone / SD card folder over FTP (port 2221) and a browser UI (port 8080) on your home Wi-Fi."
-        BackgroundColor="#181818">
+        Description="AirTile - Wi-Fi FTP server + web file browser for Windows 10 Mobile. Share a phone / SD card folder over FTP (port 2221) and a browser UI (port 8080) on your home Wi-Fi."
+        BackgroundColor="#0078D7">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"
                          Square71x71Logo="Assets\Square71x71Logo.png"
                          Square310x310Logo="Assets\Square310x310Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#181818"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#0078D7"/>
       </uap:VisualElements>
     </Application>
   </Applications>
