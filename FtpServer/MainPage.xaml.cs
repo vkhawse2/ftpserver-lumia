@@ -17,7 +17,6 @@ namespace FtpServer
     {
         readonly FtpServerEngine _ftp = new FtpServerEngine();
         readonly WebServerEngine _web = new WebServerEngine();
-        readonly List<string> _logLines = new List<string>();
         StorageFolder _homeFolder;
         bool _running;
         DisplayRequest _displayRequest;
@@ -26,7 +25,6 @@ namespace FtpServer
         public MainPage()
         {
             InitializeComponent();
-            Logger.OnLog += OnLogLine;
             Loaded += MainPage_Loaded;
         }
 
@@ -53,9 +51,8 @@ namespace FtpServer
                 if (fal.ContainsItem("homeFolder"))
                     return await fal.GetFolderAsync("homeFolder");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Logger.Log("Home folder restore failed: " + ex.Message);
             }
             return ApplicationData.Current.LocalFolder;
         }
@@ -85,8 +82,6 @@ namespace FtpServer
             StorageApplicationPermissions.FutureAccessList.AddOrReplace("homeFolder", folder);
             _homeFolder = folder;
             UpdateHomeText();
-            Logger.Log("Home folder set to " + folder.Name);
-            if (_running) Logger.Log("Restart the server to use the new home folder");
         }
 
         void Setting_Toggled(object sender, RoutedEventArgs e) { }
@@ -131,7 +126,6 @@ namespace FtpServer
                 StatusText.Text = "Stopped";
                 StartStopButton.Content = "Start server";
                 AddrText.Text = "";
-                Logger.Log("Servers stopped");
                 return;
             }
 
@@ -142,12 +136,11 @@ namespace FtpServer
                 await _ftp.StartAsync(_homeFolder, settings);
                 await _web.StartAsync(_homeFolder, settings);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _ftp.Stop();
                 _web.Stop();
                 ReleaseDisplayRequest();
-                Logger.Log("Start failed: " + ex.Message);
                 StatusText.Text = "Start failed";
                 return;
             }
@@ -170,14 +163,13 @@ namespace FtpServer
                 }
                 AddrText.Text = string.Join("\n", lines.ToArray());
             }
-            Logger.Log("Sharing folder: " + _homeFolder.Name);
         }
 
         // ---- Keep screen on (DisplayRequest) ----
 
         void AcquireDisplayRequest(ServerSettings settings)
         {
-            if (!settings.KeepScreenOn) { Logger.Log("Keep screen on: off (setting)"); return; }
+            if (!settings.KeepScreenOn) { return; }
             try
             {
                 if (_displayRequest == null) _displayRequest = new DisplayRequest();
@@ -185,12 +177,10 @@ namespace FtpServer
                 {
                     _displayRequest.RequestActive();
                     _displayActive = true;
-                    Logger.Log("Keep screen on: active");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Logger.Log("Keep screen on failed: " + ex.Message);
             }
         }
 
@@ -198,18 +188,9 @@ namespace FtpServer
         {
             if (!_displayActive || _displayRequest == null) return;
             try { _displayRequest.RequestRelease(); }
-            catch (Exception ex) { Logger.Log("Keep screen on release failed: " + ex.Message); }
+            catch (Exception) { }
             _displayActive = false;
         }
 
-        async void OnLogLine(string line)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                _logLines.Add(line);
-                while (_logLines.Count > 100) _logLines.RemoveAt(0);
-                LogBox.Text = string.Join("\n", _logLines.ToArray());
-            });
-        }
     }
 }

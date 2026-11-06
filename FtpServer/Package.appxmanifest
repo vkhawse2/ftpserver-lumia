@@ -8,7 +8,7 @@
   <Identity
     Name="Vishal.FtpServer"
     Publisher="CN=Vishal"
-    Version="1.4.0.0" />
+    Version="1.5.0.0" />
   <mp:PhoneIdentity PhoneProductId="0d05214b-1deb-4625-a05a-d29531f54827" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>

@@ -4,21 +4,6 @@ using Windows.Storage;
 
 namespace FtpServer.Server
 {
-    public static class Logger
-    {
-        public static event Action<string> OnLog;
-
-        public static void Log(string message)
-        {
-            var handler = OnLog;
-            if (handler != null)
-            {
-                try { handler(DateTime.Now.ToString("HH:mm:ss") + "  " + message); }
-                catch { }
-            }
-        }
-    }
-
     // Snapshot of the user's settings, taken when the servers start so a
     // running session never sees half-edited values.
     public class ServerSettings

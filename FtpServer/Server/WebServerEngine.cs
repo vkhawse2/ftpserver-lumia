@@ -32,7 +32,6 @@ namespace FtpServer.Server
             };
             await listener.BindServiceNameAsync(settings.WebPort.ToString());
             _listener = listener;
-            Logger.Log("Web UI listening on port " + settings.WebPort);
         }
 
         public void Stop()
@@ -109,7 +108,6 @@ namespace FtpServer.Server
                 }
                 string targetPath = UrlDecode(rawPath);
 
-                Logger.Log("Web " + method + " " + rawTarget + " from " + _socket.Information.RemoteAddress);
 
                 if (method == "POST" && targetPath == "/api/upload") { await HandleUpload(query, contentLength); return; }
                 if (method == "POST" && targetPath == "/api/mkdir") { await HandleMkdir(contentLength); return; }
@@ -119,7 +117,6 @@ namespace FtpServer.Server
             }
             catch (Exception ex)
             {
-                Logger.Log("Web error: " + ex.Message);
             }
         }
 
@@ -210,7 +207,6 @@ namespace FtpServer.Server
                     await _out.WriteAsync(buf, 0, n);
                 await _out.FlushAsync();
             }
-            Logger.Log("Web download " + file.Name + " (" + props.Size + " bytes)");
         }
 
         async Task HandleUpload(Dictionary<string, string> query, long contentLength)
@@ -238,7 +234,6 @@ namespace FtpServer.Server
                 }
                 await dst.FlushAsync();
             }
-            Logger.Log("Web upload " + name + " (" + (contentLength - remaining) + " bytes)");
             await SendStatus(200, "OK", "text/plain", Encoding.UTF8.GetBytes("OK"), null);
         }
 
@@ -270,7 +265,6 @@ namespace FtpServer.Server
             var parent = await PathHelper.GetParentAsync(_home, segs, true);
             if (parent == null) { await SendStatus(500, "Error", "text/plain", Encoding.UTF8.GetBytes("Cannot open folder"), null); return; }
             await parent.CreateFolderAsync(segs[segs.Count - 1], CreationCollisionOption.OpenIfExists);
-            Logger.Log("Web mkdir " + PathHelper.ToVirtual(segs));
             await SendStatus(200, "OK", "text/plain", Encoding.UTF8.GetBytes("OK"), null);
         }
 
@@ -287,7 +281,6 @@ namespace FtpServer.Server
             var item = await PathHelper.GetItemAsync(_home, segs);
             if (item == null) { await SendStatus(404, "Not Found", "text/plain", Encoding.UTF8.GetBytes("Not found"), null); return; }
             await item.DeleteAsync();
-            Logger.Log("Web deleted " + PathHelper.ToVirtual(segs));
             await SendStatus(200, "OK", "text/plain", Encoding.UTF8.GetBytes("OK"), null);
         }
 

@@ -21,7 +21,6 @@ namespace FtpServer.Server
             {
                 var socket = args.Socket;
                 lock (_sessions) _sessions.Add(socket);
-                Logger.Log("FTP connection from " + socket.Information.RemoteAddress);
                 var session = new FtpSession(socket, home, settings);
                 var ignored = session.RunAsync().ContinueWith(t =>
                 {
@@ -31,7 +30,6 @@ namespace FtpServer.Server
             };
             await listener.BindServiceNameAsync(settings.FtpPort.ToString());
             _listener = listener;
-            Logger.Log("FTP server listening on port " + settings.FtpPort);
         }
 
         public void Stop()

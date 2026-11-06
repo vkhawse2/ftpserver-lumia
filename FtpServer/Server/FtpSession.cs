@@ -62,7 +62,6 @@ namespace FtpServer.Server
             }
             catch (Exception ex)
             {
-                Logger.Log("FTP session error: " + ex.Message);
             }
             finally
             {
@@ -88,12 +87,10 @@ namespace FtpServer.Server
                     else if (_settings.CheckUser(_pendingUser, arg)) _loggedIn = true;
                     if (_loggedIn)
                     {
-                        Logger.Log("FTP login ok: " + _pendingUser + " from " + _socket.Information.RemoteAddress);
                         await Send("230 Login successful");
                     }
                     else
                     {
-                        Logger.Log("FTP login failed: " + _pendingUser);
                         await Send("530 Login incorrect");
                     }
                     return true;
@@ -252,7 +249,7 @@ namespace FtpServer.Server
                 }
                 await w.FlushAsync();
             }
-            catch (Exception ex) { Logger.Log("FTP LIST error: " + ex.Message); }
+            catch (Exception) { }
             try { data.Dispose(); } catch { }
             await Send("226 Directory listing sent");
         }
@@ -283,7 +280,7 @@ namespace FtpServer.Server
                 }
                 await w.FlushAsync();
             }
-            catch (Exception ex) { Logger.Log("FTP MLSD error: " + ex.Message); }
+            catch (Exception) { }
             try { data.Dispose(); } catch { }
             await Send("226 Directory listing sent");
         }
@@ -312,9 +309,8 @@ namespace FtpServer.Server
                     await dst.FlushAsync();
                 }
             }
-            catch (Exception ex) { Logger.Log("FTP RETR error: " + ex.Message); }
+            catch (Exception) { }
             try { data.Dispose(); } catch { }
-            Logger.Log("FTP download " + file.Name + " (" + total + " bytes)");
             await Send("226 Transfer complete");
         }
 
@@ -346,9 +342,8 @@ namespace FtpServer.Server
                     await dst.FlushAsync();
                 }
             }
-            catch (Exception ex) { Logger.Log("FTP STOR error: " + ex.Message); }
+            catch (Exception) { }
             try { data.Dispose(); } catch { }
-            Logger.Log("FTP upload " + name + " (" + total + " bytes)");
             await Send("226 Transfer complete");
         }
 
@@ -364,7 +359,6 @@ namespace FtpServer.Server
             try
             {
                 await item.DeleteAsync();
-                Logger.Log("FTP deleted " + PathHelper.ToVirtual(segs));
                 await Send("250 Deleted");
             }
             catch (Exception ex) { await Send("550 Delete failed: " + ex.Message); }
@@ -410,7 +404,6 @@ namespace FtpServer.Server
                 // Rename in place (same folder). Cross-folder move is not
                 // supported by the storage API for arbitrary folders.
                 await item.RenameAsync(toSegs[toSegs.Count - 1], NameCollisionOption.FailIfExists);
-                Logger.Log("FTP renamed to " + toSegs[toSegs.Count - 1]);
                 await Send("250 Renamed");
             }
             catch (Exception ex) { await Send("550 Rename failed: " + ex.Message); }

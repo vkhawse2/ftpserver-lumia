@@ -39,10 +39,6 @@
             <TextBlock Text="Settings are saved when you tap Start."
                        Foreground="#888888" FontSize="12" Margin="0,0,0,12"/>
 
-            <TextBlock Text="Log" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,8,0,4"/>
-            <TextBox x:Name="LogBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
-                     Height="220" FontSize="12"/>
-
             <TextBlock TextWrapping="Wrap" Foreground="#FFB74D" Margin="0,16,0,24"
                        Text="Keep this app open — Windows 10 Mobile stops the server when the app is closed or the phone locks. 'Keep screen on' stops the phone locking while the server runs. Plain FTP only: use on your home Wi-Fi."/>
         </StackPanel>
